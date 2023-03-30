@@ -1,57 +1,58 @@
 #include "main.h"
+#include <stdio.h>
+#include <stdarg.h>
 
 /**
- * _printf - formatted output conversion and print data.
- * @format: input string.
+ * _printf - produces output according to a format
+ * @format: format string
  *
- * Return: number of chars printed.
+ * Return: the number of characters printed
  */
-
 int _printf(const char *format, ...)
 {
-	va_list arg;
-	int i = 0, buff_count = 0;
-	char *buffer;
+    int printed = 0;
+    va_list args;
 
-	if (!format)
-		return (-1);
+    va_start(args, format);
 
-	buffer = malloc(sizeof(char) * 1024);
-	if (!buffer)
-	{
-		free(buffer);
-		return (-1);
-	}
+    while (*format)
+    {
+        if (*format == '%')
+        {
+            format++;
 
-	va_start(arg, format);
-	while (format && format[i] != '\0')
-	{
-		if (format[i] == '%')
-		{
-			i++;
-			switch (format[i])
-			{
-			case 'c':
-				buff_count = parse_char(buffer, arg, buff_count), buff_count++;
-				break;
-			case 's':
-				buff_count = parse_string(buffer, arg, buff_count);
-				break;
-			case 'i':
-			case 'd':
-				buff_count = parse_int(buffer, arg, buff_count);
-				break;
-			default:
-				buffer[buff_count] = format[i], buff_count++;
-			}
-		}
-		else
-			buffer[buff_count] = format[i], buff_count++;
-		i++;
-	}
-	buffer[buff_count] = '\0';
-	print_buff(buffer, buff_count);
-	va_end(arg);
-	free(buffer);
-	return (buff_count);
+            switch (*format)
+            {
+                case 'c':
+                    printed += putchar(va_arg(args, int));
+                    break;
+
+                case 's':
+                    printed += printf("%s", va_arg(args, char *));
+                    break;
+
+                case '%':
+                    printed += putchar('%');
+                    break;
+
+                default:
+                    putchar('%');
+                    putchar(*format);
+                    printed += 2;
+                    break;
+            }
+        }
+        else
+        {
+            putchar(*format);
+            printed++;
+        }
+
+        format++;
+    }
+
+    va_end(args);
+
+    return printed;
 }
+
