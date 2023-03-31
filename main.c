@@ -1,51 +1,44 @@
+#include <limits.h>
+#include <stdio.h>
 #include "main.h"
 
 /**
- * _printf - formatted output conversion and print data.
- * @format: input string.
+ * main - Entry point
  *
- * Return: number of chars printed.
+ * Return: Always 0
  */
-
-int _printf(const char *format, ...)
+int main(void)
 {
-	int i = 0, j = 0, buff_count = 0, prev_buff_count = 0;
-	char buffer[2000];
-	va_list arg;
-	call_t container[] = {
-		{'c', parse_char}, {'s', parse_str}, {'i', parse_int}, {'d', parse_int},
-		{'%', parse_perc}, {'b', parse_bin}, {'o', parse_oct}, {'x', parse_hex},
-		{'X', parse_X}, {'u', parse_uint}, {'R', parse_R13}, {'r', parse_rev},
-		{'\0', NULL}
-	};
+    int len;
+    int len2;
+    unsigned int ui;
+    void *addr;
 
-	if (!format)
-		return (-1);
-	va_start(arg, format);
-	while (format && format[i] != '\0')
-	{
-		if (format[i] == '%')
-		{
-			i++, prev_buff_count = buff_count;
-			for (j = 0; container[j].t != '\0'; j++)
-			{
-				if (format[i] == '\0')
-					break;
-				if (format[i] == container[j].t)
-				{
-					buff_count = container[j].f(buffer, arg, buff_count);
-					break;
-				}
-			}
-			if (buff_count == prev_buff_count && format[i])
-				i--, buffer[buff_count] = format[i], buff_count++;
-		}
-		else
-			buffer[buff_count] = format[i], buff_count++;
-		i++;
-	}
-	va_end(arg);
-	buffer[buff_count] = '\0';
-	print_buff(buffer, buff_count);
-	return (buff_count);
+    len = _printf("Let's try to printf a simple sentence.\n");
+    len2 = printf("Let's try to printf a simple sentence.\n");
+    ui = (unsigned int)INT_MAX + 1024;
+    addr = (void *)0x7ffe637541f0;
+    _printf("Length:[%d, %i]\n", len, len);
+    printf("Length:[%d, %i]\n", len2, len2);
+    _printf("Negative:[%d]\n", -762534);
+    printf("Negative:[%d]\n", -762534);
+    _printf("Unsigned:[%u]\n", ui);
+    printf("Unsigned:[%u]\n", ui);
+    _printf("Unsigned octal:[%o]\n", ui);
+    printf("Unsigned octal:[%o]\n", ui);
+    _printf("Unsigned hexadecimal:[%x, %X]\n", ui, ui);
+    printf("Unsigned hexadecimal:[%x, %X]\n", ui, ui);
+    _printf("Character:[%c]\n", 'H');
+    printf("Character:[%c]\n", 'H');
+    _printf("String:[%s]\n", "I am a string !");
+    printf("String:[%s]\n", "I am a string !");
+    _printf("Address:[%p]\n", addr);
+    printf("Address:[%p]\n", addr);
+    len = _printf("Percent:[%%]\n");
+    len2 = printf("Percent:[%%]\n");
+    _printf("Len:[%d]\n", len);
+    printf("Len:[%d]\n", len2);
+    _printf("Unknown:[%r]\n");
+    printf("Unknown:[%r]\n");
+    return (0);
 }
